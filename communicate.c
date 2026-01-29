@@ -9,7 +9,6 @@
 void sigHandler (int);
 int main()
 {
- signal (SIGINT, sigHandler);
  signal (SIGUSR1, sigHandler);
  signal (SIGUSR2, sigHandler);
  pid_t pid = fork();
@@ -39,6 +38,7 @@ int main()
  
  else {
  while(true){ 
+ signal (SIGINT, sigHandler);
  printf (" waiting...\n");
  pause();
  // return 0;
