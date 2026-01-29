@@ -4,30 +4,45 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <stdbool.h>
 
 void sigHandler (int);
 int main()
 {
+ signal (SIGINT, sigHandler);
+ signal (SIGUSR1, sigHandler);
+ signal (SIGUSR2, sigHandler);
  pid_t pid = fork();
- 
+
  if (pid < 0) {
  perror("Fork Failed");
  exit(1);
  }
-
+ 
  else if (pid == 0) {
+ while(true){
  int random_sec = (rand() % 5) + 1;
  sleep(random_sec);
- raise(SIGUSR1);
+
+ int ran_sig = rand();
+ if((ran_sig % 2) == 1){
+ kill(getppid(), SIGUSR1);
  }
+
+ if((ran_sig % 2) == 0){
+ kill(getppid(), SIGUSR2);
+ }
+
+ }
+ }
+
  
  else {
- signal (SIGINT, sigHandler);
- signal (SIGUSR1, sigHandler);
- signal (SIGUSR2, sigHandler); 
+ while(true){ 
  printf ("waiting...\n");
  pause();
- return 0;
+ // return 0;
+}
 }
 }
 
@@ -36,9 +51,8 @@ sigHandler (int sigNum)
 {
  if(sigNum == SIGINT){
  printf (" received an interrupt.\n");
- // this is where shutdown code would be inserted
  sleep (1);
- printf ("time to exit\n");
+ printf ("That's it, I'm shutting you down...\n");
  exit(0);
  }
 
