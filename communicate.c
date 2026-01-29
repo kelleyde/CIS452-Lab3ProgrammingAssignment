@@ -39,7 +39,7 @@ int main()
  
  else {
  while(true){ 
- printf ("waiting...\n");
+ printf (" waiting...\n");
  pause();
  // return 0;
 }
